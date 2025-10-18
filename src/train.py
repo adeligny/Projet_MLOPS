@@ -1,4 +1,4 @@
-﻿import argparse, os, yaml, mlflow, mlflow.sklearn
+﻿import argparse, yaml, mlflow, mlflow.sklearn
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -92,7 +92,7 @@ def main(args):
         try:
             proba = pipe.predict_proba(X_test)[:, 1]
             metrics["roc_auc"] = float(roc_auc_score(y_test, proba))
-        except Exception:
+        except ValueError:
             pass
 
         # log
