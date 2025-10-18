@@ -1,0 +1,6 @@
+artifact_location: file:C:/mlops/mlruns/205843826123235984
+creation_time: 1760808094737
+experiment_id: '205843826123235984'
+last_update_time: 1760808094737
+lifecycle_stage: active
+name: logistic_regression

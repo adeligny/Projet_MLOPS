@@ -1,0 +1,14 @@
+artifact_uri: file:C:/mlops/mlruns/205843826123235984/0b49c48e3b3b49faaf589337a209e4fc/artifacts
+end_time: 1760808107249
+entry_point_name: ''
+experiment_id: '205843826123235984'
+lifecycle_stage: active
+run_id: 0b49c48e3b3b49faaf589337a209e4fc
+run_name: logistic_regression_run
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760808095423
+status: 3
+tags: []
+user_id: anais

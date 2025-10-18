@@ -1,0 +1,14 @@
+artifact_uri: file:C:/mlops/mlruns/318417948158576460/37327b99bb804bf8ac9f650ebee7daf6/artifacts
+end_time: 1760808308454
+entry_point_name: ''
+experiment_id: '318417948158576460'
+lifecycle_stage: active
+run_id: 37327b99bb804bf8ac9f650ebee7daf6
+run_name: random_forest_run
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760808291404
+status: 3
+tags: []
+user_id: anais

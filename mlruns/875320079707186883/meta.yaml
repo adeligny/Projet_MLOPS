@@ -1,0 +1,6 @@
+artifact_location: file:C:/mlops/mlruns/875320079707186883
+creation_time: 1760808266516
+experiment_id: '875320079707186883'
+last_update_time: 1760808266516
+lifecycle_stage: active
+name: decision_tree
