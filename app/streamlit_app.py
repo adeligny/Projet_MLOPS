@@ -9,7 +9,7 @@ st.set_page_config(page_title="Loan Default – Prédiction", layout="wide")
 st.title("🔮 Loan Default — Interface simple")
 
 # --- Configurations de base ---
-TRACKING_URI = "mlruns"      # MLflow local
+TRACKING_URI = "mlruns"  # MLflow local
 DATA_PATH = "data/raw/loans.csv"
 
 mlflow.set_tracking_uri(TRACKING_URI)
@@ -32,6 +32,7 @@ if not exp_names:
 
 exp_name = st.selectbox("Experiment MLflow", options=sorted(exp_names), index=0)
 
+
 # --- Dernier run terminé ---
 def get_latest_finished_run(experiment_name: str):
     exp = client.get_experiment_by_name(experiment_name)
@@ -45,6 +46,7 @@ def get_latest_finished_run(experiment_name: str):
     )
     return runs[0] if runs else None
 
+
 run = get_latest_finished_run(exp_name)
 if not run:
     st.warning("Aucun run 'FINISHED' pour cet experiment. Lancez un entraînement.")
@@ -56,9 +58,13 @@ st.success(f"Run sélectionné : {run_id}")
 # --- Afficher les métriques principales ---
 m = run.data.metrics
 col1, col2, col3 = st.columns(3)
-col1.metric("Accuracy", f"{m.get('accuracy', float('nan')):.3f}" if 'accuracy' in m else "—")
-col2.metric("F1", f"{m.get('f1', float('nan')):.3f}" if 'f1' in m else "—")
-col3.metric("ROC AUC", f"{m.get('roc_auc', float('nan')):.3f}" if 'roc_auc' in m else "—")
+col1.metric(
+    "Accuracy", f"{m.get('accuracy', float('nan')):.3f}" if "accuracy" in m else "—"
+)
+col2.metric("F1", f"{m.get('f1', float('nan')):.3f}" if "f1" in m else "—")
+col3.metric(
+    "ROC AUC", f"{m.get('roc_auc', float('nan')):.3f}" if "roc_auc" in m else "—"
+)
 
 # --- Charger le modèle ---
 try:
@@ -107,7 +113,12 @@ with st.form("predict_form"):
         with cols[i % 3]:
             opts = choices_cat.get(c, [""])
             val = defaults_cat.get(c, opts[0] if opts else "")
-            st.selectbox(c, options=opts, index=(opts.index(val) if val in opts else 0), key=f"cat_{c}")
+            st.selectbox(
+                c,
+                options=opts,
+                index=(opts.index(val) if val in opts else 0),
+                key=f"cat_{c}",
+            )
     submitted = st.form_submit_button("Prédire")
 
 if submitted:

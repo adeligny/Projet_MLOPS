@@ -9,9 +9,12 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
+
 def get_model(name, params):
     if name == "logistic_regression":
-        return LogisticRegression(C=float(params.get("C", 1.0)), max_iter=int(params.get("max_iter", 200)))
+        return LogisticRegression(
+            C=float(params.get("C", 1.0)), max_iter=int(params.get("max_iter", 200))
+        )
     if name == "decision_tree":
         return DecisionTreeClassifier(
             max_depth=int(params.get("max_depth", 6)),
@@ -25,6 +28,7 @@ def get_model(name, params):
             n_jobs=-1,
         )
     raise ValueError(f"Unknown model {name}")
+
 
 def main(args):
     # 1) charge config
@@ -40,7 +44,9 @@ def main(args):
     # vérifs bavardes
     missing = [c for c in (num_cols + cat_cols + [target]) if c not in df.columns]
     if missing:
-        raise ValueError(f"Colonnes manquantes dans le CSV: {missing}\nColonnes dispo: {list(df.columns)}")
+        raise ValueError(
+            f"Colonnes manquantes dans le CSV: {missing}\nColonnes dispo: {list(df.columns)}"
+        )
 
     # 3) coercition des numériques (si colonnes importées en texte)
     for c in num_cols:
@@ -54,13 +60,22 @@ def main(args):
     y = df[target]
 
     # 6) split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=cfg.get("test_size", 0.2), random_state=cfg.get("random_state", 42), stratify=y if y.nunique() <= 10 else None)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        test_size=cfg.get("test_size", 0.2),
+        random_state=cfg.get("random_state", 42),
+        stratify=y if y.nunique() <= 10 else None,
+    )
 
     # 7) pipeline
-    pre = ColumnTransformer([
-        ("num", StandardScaler(with_mean=True, with_std=True), num_cols),
-        ("cat", OneHotEncoder(handle_unknown="ignore"), cat_cols)
-    ], remainder="drop")
+    pre = ColumnTransformer(
+        [
+            ("num", StandardScaler(with_mean=True, with_std=True), num_cols),
+            ("cat", OneHotEncoder(handle_unknown="ignore"), cat_cols),
+        ],
+        remainder="drop",
+    )
     model = get_model(args.model, cfg["models"][args.model])
     pipe = Pipeline([("pre", pre), ("model", model)])
 
@@ -72,7 +87,7 @@ def main(args):
         pred = pipe.predict(X_test)
         metrics = {
             "accuracy": float(accuracy_score(y_test, pred)),
-            "f1": float(f1_score(y_test, pred)) if y.nunique()==2 else None,
+            "f1": float(f1_score(y_test, pred)) if y.nunique() == 2 else None,
         }
         try:
             proba = pipe.predict_proba(X_test)[:, 1]
@@ -81,15 +96,20 @@ def main(args):
             pass
 
         # log
-        mlflow.log_metrics({k:v for k,v in metrics.items() if v is not None})
+        mlflow.log_metrics({k: v for k, v in metrics.items() if v is not None})
         mlflow.sklearn.log_model(pipe, "model")
 
         print("Shapes train/test:", X_train.shape, X_test.shape)
         print("Target balance:", y_train.value_counts(normalize=True).to_dict())
         print("Run done:", metrics)
 
+
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--model", required=True, choices=["logistic_regression","decision_tree","random_forest"])
+    p.add_argument(
+        "--model",
+        required=True,
+        choices=["logistic_regression", "decision_tree", "random_forest"],
+    )
     p.add_argument("--data", required=True)
     main(p.parse_args())
